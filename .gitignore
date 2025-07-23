@@ -1,0 +1,54 @@
+# =========================
+# IntelliJ IDEA 설정
+# =========================
+.idea/
+*.iml
+*.iws
+out/
+*.ipr
+
+### Eclipse ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+# =========================
+# 빌드 도구 (Maven/Gradle)
+# =========================
+target/
+build/
+
+# =========================
+# OS별 무시 파일
+# =========================
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# Linux
+*~
+
+# =========================
+# 로그 및 기타
+# =========================
+*.log
+*.class
+*.jar
+*.war
+
+# =========================
+# 환경파일 (선택적 무시)
+# =========================
+.env
+*.properties.local
