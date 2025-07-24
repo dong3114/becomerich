@@ -21,12 +21,18 @@ public class UserServiceImpl implements UserService{
     }
 	
     @Override
-    public int rollDice() {
+    public int rollDice(int diceNum) {
     	/*
     	 * 1부터 6사이의 랜덤한 숫자를 리턴한다.
     	 */
         Random random = new Random();
-        return random.nextInt(6) + 1;
+        int sum = 0;
+        
+        for (int i = 0; i<diceNum; i++) {
+        	sum += random.nextInt(6) + 1;
+        }
+        
+        return sum;
     }
 
     @Override
@@ -43,13 +49,25 @@ public class UserServiceImpl implements UserService{
     	 * 통행료를 지불할 유저, 전체 유저 리스트, 통행료를 지불할 땅 객체를 입력 받아
     	 * 땅 toll에 맞춰 통행료 지불하는 사람의 돈을 차감하고, 땅 주인의 소지금을 증가시킨다.
     	 */
-        int tollFee = -land.getLandToll();
-        String landOwnerName = land.getLandUserName();
-        
-        // 여기서 User를 받지 않고,LandUserName을 String 으로 받으면 User를 찾아야 한다. -> 전체 user 리스트인 users 필요
-        User landOwner = users.stream().filter(u -> u.getUserName().equals(landOwnerName)).findFirst().orElse(null); // 이 부분 exception 처리가 필요할 듯?
-        changeUserMoney(user, tollFee);
-        receiveToll(landOwner, tollFee);
+    	try {
+    		int tollFee = -land.getLandToll();
+            String landOwnerName = land.getLandUserName();
+    	} catch (Exception e) {
+    		System.out.println(e.getMessage());
+    		System.out.println("없는 땅 입니다.");
+    	}
+    	
+        if (landOwnerName != null) {
+        	User landOwner = users.stream().filter(u -> u.getUserName().equals(landOwnerName)).findFirst().orElse(null); // 이 부분 exception 처리가 필요할 듯?
+            try {
+            	changeUserMoney(user, tollFee);
+                receiveToll(landOwner, tollFee);
+            }
+            catch (Exception e) {
+            	System.out.println(e.getMessage());
+            	System.out.println("땅 주인인 유저를 찾을 수 없습니다.");
+            }
+        }
     }
 
     @Override
@@ -82,10 +100,10 @@ public class UserServiceImpl implements UserService{
     	 */
         List<Land> userOwnLands = user.getUserLands();
         
-        for (Land land : userOwnLands) {
-        	sellLand(user,land);
-        }
-        
+//        System.out.println("sellAllLands 를 실행합니다."); 
+        while (!userOwnLands.isEmpty()) { // 리스트가 비어있지 않은지 확인
+            Land lastItem = userOwnLands.remove(userOwnLands.size() - 1); // 마지막 요소 제거 및 반환
+        }         
     }
     
     @Override
@@ -111,6 +129,8 @@ public class UserServiceImpl implements UserService{
         int moneyHaving = user.getUserMoney();
         user.setUserMoney(moneyHaving + changedAmount);
     }
+
+	
 
 	
 

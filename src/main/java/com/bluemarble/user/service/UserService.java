@@ -9,7 +9,7 @@ public interface UserService {
 	
     User createUser(String userName, int userMoney); // 유저를 생성하여 리턴한다.
     
-    int rollDice(); // 주사위 굴리기, 1~6사이의 값을 리턴
+    int rollDice(int diceNum); // 주사위의 개수를 입력 받아 주사위 굴리기, 각 1~6사이의 값을 리턴
     void moveByDice(User user, int diceNum); // 주사위 값으로 유저를 다음 위치의 인덱스로 이동시킨다.
 
     
