@@ -8,28 +8,37 @@ import org.springframework.stereotype.Service;
 
 import com.bluemarble.board.dto.Board;
 import com.bluemarble.user.dto.User;
-import com.bluemarble.utils.rule.CheckRule;
+import com.bluemarble.user.service.UserService;
 import com.bluemarble.utils.rule.GameRule;
 import com.bluemarble.utils.rule.RuleUtils;
 /**
- * 최종수정 (2025.07.24 한동환)  
- * BoardService는 단일 User나 Land 객체를 직접 다루기 위한 서비스가 아닙니다.
- * 이 클래스는 생존한 모든 사용자, 보유한 모든 토지 등 게임 진행에 필요한
- * 복수의 객체 집합을 대상으로 조작을 수행하는 서비스 레이어입니다.
- * 
- * 예: 턴 종료 처리, 전체 자산 평가, 게임 종료 조건 판단 등.
+ * 최종수정: 2025.07.24 (작성자: 한동환)
+ *
+ * BoardServiceImpl은 단일 User나 Land 객체를 직접 조작하지 않습니다.
+ * 이 클래스는 게임 흐름 전반에 관여하며, 생존한 모든 사용자 목록, 전체 보유 토지 등
+ * 복수의 도메인 객체 컬렉션을 대상으로 동작하는 서비스 레이어입니다.
+ *
+ * 주요 기능
+ * - 턴 종료 시 유저 생존 여부 확인 및 턴 증가
+ * - 최대 턴 도달 시 게임 종료 절차 수행
+ * - 전체 유저 자산 평가 및 승자 판단 등
+ *
+ * 설계 의도
+ * 사용자 개별 조작은 다른 도메인 서비스에서 처리하고,
+ * 이 서비스는 게임 판(Board)과 규칙(GameRule)을 기반으로 전체 흐름을 관리합니다.
  */
 @Service
 public class BoardServiceImpl implements BoardService{
 	private Board board;
 	private GameRule gameRule;
+	private UserService userServiceImpl;
 	
 	@Autowired
-	public BoardServiceImpl(Board board, GameRule gameRule) {
+	public BoardServiceImpl(Board board, GameRule gameRulem, UserService userService) {
 		this.board = board;
 		this.gameRule = gameRule;
+		this.userServiceImpl = userService;
 	}
-	
 	
 	@Override
 	public boolean checkElimination(User user) {
@@ -37,7 +46,7 @@ public class BoardServiceImpl implements BoardService{
 	}
 	
 	@Override
-	public User endGame() {
+	public List<User> endGame() {
 		
 		return null;
 	}
@@ -53,6 +62,8 @@ public class BoardServiceImpl implements BoardService{
 			board.nextTurn();
 		} // 4. max턴 일때 GameRule에 의해서 maxTurn 메서드 실행
 		else {
+			for(User user : aliveUsers) {
+			}
 			RuleUtils.maxTurn(aliveUsers);	// 전체 유저의 모든 땅 판매
 		}
 		board.setAliveUser(aliveUsers);

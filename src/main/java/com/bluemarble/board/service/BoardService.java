@@ -23,5 +23,5 @@ public interface BoardService {
      * @param sc 외부에서 받아올 입력 객체 (유저정보 입력)
      */
     void startGame(Scanner sc);
-    User endGame();
+    List<User> endGame();
 }
